@@ -108,15 +108,25 @@ These folders were available on the website
 We want to look into the directories with a 301 response
 ##### Command
 ```{bash}
-gobuster dir -u http://10.10.2.80:80/pricing -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x .html
+gobuster dir -u http://10.10.2.80:80/pricing -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
 ##### Output
 ```{bash}
 /pricing.html (Status: 200)
+/note.txt (Status: 200)
 ```
+Lets investigate note.txt
+##### Command and Output
+```{bash}
+root@ip-10-10-253-34:~# curl http://10.10.2.80/pricing/note.txt
+J,
+Please stop leaving notes randomly on the website
+-RP
+```
+This may reveal a users information later on, lets save it for later.
 ##### Command
 ```{bash}
-gobuster dir -u http://10.10.2.80:80/gallery -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x .html
+gobuster dir -u http://10.10.2.80:80/gallery -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
 ##### Output
 ```{bash}
@@ -124,7 +134,7 @@ gobuster dir -u http://10.10.2.80:80/gallery -w /usr/share/wordlists/dirbuster/d
 ```
 ##### Command
 ```{bash}
-gobuster dir -u http://10.10.2.80:80/static -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x .html
+gobuster dir -u http://10.10.2.80:80/static -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
 ##### Output
 ```{bash}
@@ -151,3 +161,86 @@ gobuster dir -u http://10.10.2.80:80/static -w /usr/share/wordlists/dirbuster/di
 
 Now we have a good reference of the site layout and what directories and files are available. Lets navigate to the page on our browser
 ![website-screenshot](assets/img/writeupscreenshots/valley-1.png)
+
+Two buttons and some text, lets look at the source:
+![website-screenshot](assets/img/writeupscreenshots/valley-2.png)
+Nothing interesting here, links to the pages we found earlier are visible
+
+Clicking the first button on the page takes us to /gallery.html
+![website-screenshot](assets/img/writeupscreenshots/valley-3.png)
+A page full of pictures, with a button to return home, lets look at the source:
+![website-screenshot](assets/img/writeupscreenshots/valley-4.png)
+So it looks like the images correlate to what we found earlier with gobuster, however there is no mention of the /00 directory in the source. This may be something to investigate.
+
+Lets look at the final page we know of, which the second button leads to:
+![website-screenshot](assets/img/writeupscreenshots/valley-5.png)
+Nothing interesting here, looking at the source:
+![website-screenshot](assets/img/writeupscreenshots/valley-6.png)
+Nothing interesting here either... lets see if that /00 directory gives us something. 
+
+##### Command and Output
+```{bash}
+root@ip-10-10-253-34:~# curl http://10.10.2.80/static/00
+dev notes from valleyDev:
+-add wedding photo examples
+-redo the editing on #4
+-remove /dev1243224123123
+-check for SIEM alerts
+```
+Very interesting, we can gather some more information for further enumeration from this. It appears at some point in time there was a /dev1243224123123 folder. Let's see if it still exists.
+![website-screenshot](assets/img/writeupscreenshots/valley-7.png)
+A login page! Let us check the source first as always.
+![website-screenshot](assets/img/writeupscreenshots/valley-8.png)
+We see a simple login form, but two custom js files, lets see if they have anything juicy
+
+First we look at button.js
+![website-screenshot](assets/img/writeupscreenshots/valley-9.png)
+Nothing interesting, lets check out dev.js
+![website-screenshot](assets/img/writeupscreenshots/valley-10.png)
+This function contains the logic for the submit click, and the username / password validation. Upon further examination, the login information is hardcoded, giving us a username and password, aswell as the location of another note
+##### Page Source Code
+```{javascript}
+    if (username === "siemDev" && password === "california") {
+        window.location.href = "/dev1243224123123/devNotes37370.txt";
+```
+
+Lets see what the note says:
+##### Command and Output
+```{bash}
+root@ip-10-10-253-34:~# curl http://10.10.2.80/dev1243224123123/devNotes37370.txt
+dev notes for ftp server:
+-stop reusing credentials
+-check for any vulnerabilies
+-stay up to date on patching
+-change ftp port to normal port
+```
+
+Remeber that ftp service from earlier?? Let's see if these credentials we just found work with them.
+
+```{bash}
+ftp 10.10.2.80 37370
+Connected to 10.10.2.80.
+220 (vsFTPd 3.0.3)
+Name (10.10.2.80:root): siemDev
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ls
+200 PORT command successful. Consider using PASV.
+150 Here comes the directory listing.
+-rw-rw-r--    1 1000     1000         7272 Mar 06  2023 siemFTP.pcapng
+-rw-rw-r--    1 1000     1000      1978716 Mar 06  2023 siemHTTP1.pcapng
+-rw-rw-r--    1 1000     1000      1972448 Mar 06  2023 siemHTTP2.pcapng
+226 Directory send OK.
+```
+Credentials work well, and after listing the directory we see there are 3 pcaps available. Let's download them and take a closer look.
+The FTP and HTTP1 pcap do not hold anything interesting, but this in the HTTP2 caught my eye.
+![website-screenshot](assets/img/writeupscreenshots/valley-11.png)
+
+This means there was a form submitted - over http... credentials again?
+![website-screenshot](assets/img/writeupscreenshots/valley-11.png)
+After filtering by this we see packet 2335 is the only packet with that protocol, and we get another set of credentials:
+*valleyDev:ph0t0s1234*
+
