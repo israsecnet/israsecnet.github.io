@@ -5,4 +5,4 @@ categories: [Writeups, TryHackMe]
 tags: [valley, ctf]
 ---
 # Intro
-This box askes us to find a user and root flag, not much direction or hints.
+This box askes us to find a user and root flag, not much else in regards to direction or hints.
