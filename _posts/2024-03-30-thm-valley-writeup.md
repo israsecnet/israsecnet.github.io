@@ -10,13 +10,13 @@ This box askes us to find a user and root flag, not much else in regards to dire
 Let's start with
 ### Enumeration
 ##### Command
-```console
+```terminal
 rustscan -a 10.10.2.80
 ```
 *I like using rustscan initally as it is fast and works pretty well. We can run an nmap scan later to confirm services and look at all ports if we need to.*
 
 #####  Output
-```console
+```terminal
 PORT      STATE SERVICE REASON
 22/tcp    open  ssh     syn-ack
 80/tcp    open  http    syn-ack
@@ -24,11 +24,11 @@ PORT      STATE SERVICE REASON
 ```
 Three ports is enough to start, lets dig a bit deeper into the service versions and underyling OS with Nmap. Verbose flags can result in noisy output so lets save this to a file for later reference.
 ##### Command
-```console
+```terminal
 nmap -sV -sC -A -O -vv -p 22,80,37370 10.10.2.80 > initNmapScan
 ```
 #####  Output
-```console
+```terminal
 PORT      STATE SERVICE REASON         VERSION
 22/tcp    open  ssh     syn-ack ttl 64 OpenSSH 8.2p1 Ubuntu 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)
 80/tcp    open  http    syn-ack ttl 64 Apache httpd 2.4.41 ((Ubuntu))
@@ -69,13 +69,13 @@ Service Info: OSs: Linux, Unix; CPE: cpe:/o:linux:linux_kernel
 So now we know we are working with a linux machine most likely. We have a few routes to enumerate from here, but I am lazy and like to go for the lowest hanging fruit first.
 From the output we can see port 37370 is open and hosting an FTP service
 ##### Output
-```console
+```terminal
 37370/tcp open  ftp     syn-ack ttl 64 vsftpd 3.0.3
 ```
 
 Let's see if they allow for anonymous connections:
 ##### Command and Output
-```console
+```terminal
 root@ip-10-10-253-34:~# ftp 10.10.2.80 37370
 Connected to 10.10.2.80.
 220 (vsFTPd 3.0.3)
@@ -90,12 +90,12 @@ Nope, well now lets move onto the webpage hosted on port 80.
 
 Before I start looking around the website manually, I like to begin some enumeration with gobuster so it can run in the background if needed.
 ##### Command
-```console
+```terminal
 gobuster dir -u http://10.10.2.80:80 -w /usr/share/wordlists/dirb/common.txt
 ```
 These folders were available on the website
 ##### Output
-```console
+```terminal
 /.htaccess (Status: 403)
 /.hta (Status: 403)
 /.htpasswd (Status: 403)
@@ -107,17 +107,17 @@ These folders were available on the website
 ```
 We want to look into the directories with a 301 response
 ##### Command
-```console
+```terminal
 gobuster dir -u http://10.10.2.80:80/pricing -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
 ##### Output
-```console
+```terminal
 /pricing.html (Status: 200)
 /note.txt (Status: 200)
 ```
 Lets investigate note.txt
 ##### Command and Output
-```console
+```terminal
 root@ip-10-10-253-34:~# curl http://10.10.2.80/pricing/note.txt
 J,
 Please stop leaving notes randomly on the website
@@ -125,19 +125,19 @@ Please stop leaving notes randomly on the website
 ```
 This may reveal a users information later on, lets save it for later.
 ##### Command
-```console
+```terminal
 gobuster dir -u http://10.10.2.80:80/gallery -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
 ##### Output
-```console
+```terminal
 /gallery.html (Status: 200)
 ```
 ##### Command
-```console
+```terminal
 gobuster dir -u http://10.10.2.80:80/static -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
 ##### Output
-```console
+```terminal
 /1 (Status: 200)
 /3 (Status: 200)
 /5 (Status: 200)
@@ -179,7 +179,7 @@ Nothing interesting here, looking at the source:
 Nothing interesting here either... lets see if that /00 directory gives us something. 
 
 ##### Command and Output
-```console
+```terminal
 root@ip-10-10-253-34:~# curl http://10.10.2.80/static/00
 dev notes from valleyDev:
 -add wedding photo examples
@@ -206,7 +206,7 @@ This function contains the logic for the submit click, and the username / passwo
 
 Lets see what the note says:
 ##### Command and Output
-```console
+```terminal
 root@ip-10-10-253-34:~# curl http://10.10.2.80/dev1243224123123/devNotes37370.txt
 dev notes for ftp server:
 -stop reusing credentials
@@ -217,7 +217,7 @@ dev notes for ftp server:
 
 Remeber that ftp service from earlier?? Let's see if these credentials we just found work with them.
 
-```console
+```terminal
 ftp 10.10.2.80 37370
 Connected to 10.10.2.80.
 220 (vsFTPd 3.0.3)
