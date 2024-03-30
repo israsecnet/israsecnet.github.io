@@ -4,5 +4,17 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-> Add Markdown syntax content to file `_tabs/about.md`{: .filepath } and it will show up on this page.
-{: .prompt-tip }
+# Who
+My name is Israel, but my friends call me isra.
+
+# What
+This site serves as a portfolio for my work and as a platform to centralize resources or projects I find useful
+
+# When
+I have been breaking computers since limewire, but back then it was unintentional
+
+# Where
+Based in the US, but I love to travel
+
+# Why
+I believe it is important for information to be shared amongst the community, especially pertaining to security
