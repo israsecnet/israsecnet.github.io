@@ -200,7 +200,7 @@ Nothing interesting, lets check out dev.js
 This function contains the logic for the submit click, and the username / password validation. Upon further examination, the login information is hardcoded, giving us a username and password, aswell as the location of another note
 ##### Page Source Code
 ```javascript
-    if (username === "siemDev" && password === "california") {
+    if (username === "siemDev" && password === "REDACTED") {
         window.location.href = "/dev1243224123123/devNotes37370.txt";
 ```
 
@@ -242,7 +242,7 @@ The FTP and HTTP1 pcap do not hold anything interesting, but this in the HTTP2 c
 This means there was a form submitted - over http... credentials again?
 ![website-screenshot](assets/img/writeupscreenshots/valley-12.png)
 After filtering by this we see packet 2335 is the only packet with that protocol, and we get another set of credentials:
-*valleyDev:ph0t0s1234*
+*valleyDev:REDACTED*
 
 Lets try to login to FTP with these credentials as well:
 ```terminal
@@ -279,7 +279,7 @@ Nice.   Let's get our first flag and see if the other credentials work on this b
 valleyDev@valley:~$ ls
 user.txt
 valleyDev@valley:~$ cat user.txt
-THM{k@l1_1n_th3_v@lley}
+THM{REDACTED}
 ```
 ```terminal
 valleyDev@valley:~$ su siemDev
@@ -326,7 +326,7 @@ Looking again with ghidra at the newly unpacked executable, we can find two md5 
 ![website-screenshot](assets/img/writeupscreenshots/valley-14.png)
 We could use hashcat or john to try and crack this, but lets see if our favorite online site has them first.
 ![website-screenshot](assets/img/writeupscreenshots/valley-15.png)
-Here we have a set of credentials! *valley:liberty123*
+Here we have a set of credentials! *valley:REDACTED*
 Let's see if they work on the box:
 ```terminal
 $ su valley
@@ -428,7 +428,7 @@ whoami
 root
 # cat /root/root.txt
 cat /root/root.txt
-THM{v@lley_0f_th3_sh@d0w_0f_pr1v3sc}
+THM{REDACTED}
 ```
 That's all folks!
 
