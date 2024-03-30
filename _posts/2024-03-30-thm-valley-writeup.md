@@ -150,4 +150,4 @@ gobuster dir -u http://10.10.2.80:80/static -w /usr/share/wordlists/dirbuster/di
 ```
 
 Now we have a good reference of the site layout and what directories and files are available. Lets navigate to the page on our browser
-
+![website-screenshot](assets/img/writeupscreenshots/valley-1.png)
