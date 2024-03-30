@@ -4,18 +4,16 @@ date: 2024-03-30 10:58 -0400
 categories: [Writeups, TryHackMe]
 tags: [valley, ctf]
 ---
+
 # Intro
 This box askes us to find a user and root flag, not much else in regards to direction or hints.
 
 Let's start with
-### Enumeration
-##### Command
+## Enumeration
 ```terminal
 rustscan -a 10.10.2.80
 ```
 *I like using rustscan initally as it is fast and works pretty well. We can run an nmap scan later to confirm services and look at all ports if we need to.*
-
-#####  Output
 ```terminal
 PORT      STATE SERVICE REASON
 22/tcp    open  ssh     syn-ack
@@ -23,11 +21,9 @@ PORT      STATE SERVICE REASON
 37370/tcp open  unknown syn-ack
 ```
 Three ports is enough to start, lets dig a bit deeper into the service versions and underyling OS with Nmap. Verbose flags can result in noisy output so lets save this to a file for later reference.
-##### Command
 ```terminal
 nmap -sV -sC -A -O -vv -p 22,80,37370 10.10.2.80 > initNmapScan
 ```
-#####  Output
 ```terminal
 PORT      STATE SERVICE REASON         VERSION
 22/tcp    open  ssh     syn-ack ttl 64 OpenSSH 8.2p1 Ubuntu 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)
@@ -68,13 +64,11 @@ Service Info: OSs: Linux, Unix; CPE: cpe:/o:linux:linux_kernel
 
 So now we know we are working with a linux machine most likely. We have a few routes to enumerate from here, but I am lazy and like to go for the lowest hanging fruit first.
 From the output we can see port 37370 is open and hosting an FTP service
-##### Output
 ```terminal
 37370/tcp open  ftp     syn-ack ttl 64 vsftpd 3.0.3
 ```
 
 Let's see if they allow for anonymous connections:
-##### Command and Output
 ```terminal
 root@ip-10-10-253-34:~# ftp 10.10.2.80 37370
 Connected to 10.10.2.80.
@@ -89,12 +83,10 @@ ftp>
 Nope, well now lets move onto the webpage hosted on port 80.
 
 Before I start looking around the website manually, I like to begin some enumeration with gobuster so it can run in the background if needed.
-##### Command
 ```terminal
 gobuster dir -u http://10.10.2.80:80 -w /usr/share/wordlists/dirb/common.txt
 ```
 These folders were available on the website
-##### Output
 ```terminal
 /.htaccess (Status: 403)
 /.hta (Status: 403)
@@ -106,17 +98,14 @@ These folders were available on the website
 /static (Status: 301)
 ```
 We want to look into the directories with a 301 response
-##### Command
 ```terminal
 gobuster dir -u http://10.10.2.80:80/pricing -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
-##### Output
 ```terminal
 /pricing.html (Status: 200)
 /note.txt (Status: 200)
 ```
 Lets investigate note.txt
-##### Command and Output
 ```terminal
 root@ip-10-10-253-34:~# curl http://10.10.2.80/pricing/note.txt
 J,
@@ -124,19 +113,15 @@ Please stop leaving notes randomly on the website
 -RP
 ```
 This may reveal a users information later on, lets save it for later.
-##### Command
 ```terminal
 gobuster dir -u http://10.10.2.80:80/gallery -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
-##### Output
 ```terminal
 /gallery.html (Status: 200)
 ```
-##### Command
 ```terminal
 gobuster dir -u http://10.10.2.80:80/static -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x html,txt
 ```
-##### Output
 ```terminal
 /1 (Status: 200)
 /3 (Status: 200)
@@ -178,7 +163,6 @@ Nothing interesting here, looking at the source:
 ![website-screenshot](assets/img/writeupscreenshots/valley-6.png)
 Nothing interesting here either... lets see if that /00 directory gives us something. 
 
-##### Command and Output
 ```terminal
 root@ip-10-10-253-34:~# curl http://10.10.2.80/static/00
 dev notes from valleyDev:
@@ -198,14 +182,12 @@ First we look at button.js
 Nothing interesting, lets check out dev.js
 ![website-screenshot](assets/img/writeupscreenshots/valley-10.png)
 This function contains the logic for the submit click, and the username / password validation. Upon further examination, the login information is hardcoded, giving us a username and password, aswell as the location of another note
-##### Page Source Code
 ```javascript
     if (username === "siemDev" && password === "REDACTED") {
         window.location.href = "/dev1243224123123/devNotes37370.txt";
 ```
 
 Lets see what the note says:
-##### Command and Output
 ```terminal
 root@ip-10-10-253-34:~# curl http://10.10.2.80/dev1243224123123/devNotes37370.txt
 dev notes for ftp server:
@@ -214,7 +196,7 @@ dev notes for ftp server:
 -stay up to date on patching
 -change ftp port to normal port
 ```
-
+## First user credentials
 Remeber that ftp service from earlier?? Let's see if these credentials we just found work with them.
 
 ```terminal
@@ -257,6 +239,7 @@ Login failed.
 421 Service not available, remote server has closed connection
 ftp> 
 ```
+## Second user credentials
 Well, that seems to not be working, lets try ssh with the same credentials
 ```terminal
 ssh valleyDev@10.10.235.73
@@ -324,6 +307,7 @@ Unpacked 1 file.
 ```
 Looking again with ghidra at the newly unpacked executable, we can find two md5 strings right above the program prompts.
 ![website-screenshot](assets/img/writeupscreenshots/valley-14.png)
+## Third user credentials
 We could use hashcat or john to try and crack this, but lets see if our favorite online site has them first.
 ![website-screenshot](assets/img/writeupscreenshots/valley-15.png)
 Here we have a set of credentials! *valley:REDACTED*
@@ -334,7 +318,7 @@ Password:
 valley@valley:/home/valleyDev$ 
 ```
 Tsk, tsk, tsk. not good password policy.
-
+## Privilege Escalation
 After doing some enumeration, we stumble upon:
 ```terminal
 valley@valley:~$ cat /etc/crontab
