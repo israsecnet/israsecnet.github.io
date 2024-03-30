@@ -240,7 +240,8 @@ The FTP and HTTP1 pcap do not hold anything interesting, but this in the HTTP2 c
 ![website-screenshot](assets/img/writeupscreenshots/valley-11.png)
 
 This means there was a form submitted - over http... credentials again?
-![website-screenshot](assets/img/writeupscreenshots/valley-11.png)
+![website-screenshot](assets/img/writeupscreenshots/valley-12.png)
 After filtering by this we see packet 2335 is the only packet with that protocol, and we get another set of credentials:
 *valleyDev:ph0t0s1234*
+
 
