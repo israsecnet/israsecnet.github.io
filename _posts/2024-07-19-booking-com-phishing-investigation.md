@@ -190,4 +190,10 @@ Wilhelminaplein 17 6411 KW Heerlen Niederlande
 Booking: The Loft Hostel Lavapies
 4 Calle de la Esperanza Centro 28012 Madrid Spain
 
+Booking: De Twee Linden
+Zandstraat 100 6658 CX Beneden-Leeuwen Netherlands
+
+Booking: Aethos Sardinia
+Via Monti Corru 07020 Cannigione Italy
+
 ```
