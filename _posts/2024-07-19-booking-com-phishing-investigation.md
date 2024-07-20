@@ -9,10 +9,10 @@ tags: [phishing, threat intelligence]
 This campaign is most likely still live and you should visit the links below with caution!
 
 # Intro
-I like receiving phishing emails, let's investigate this specific campaign I stumbled upon.
+I like receiving phishing emails, let's investigate this specific campaign I stumbled upon. A friend of mine recently booked on booking.com, and received a follow up message from within the booking\[.]com messaging service seemingly from the hotel or booking.
 
 # First look
-The email comes in impersonating the booking\[.]com website. They did a good job as it was able to get into my inbox! It prompts for a reservation to be completed or it will be cancelled, and then provides an ID and a link to follow. 
+The email comes in impersonating the booking\[.]com website. It prompts for a reservation to be completed or it will be cancelled, and then provides an ID and a link to follow. 
 
 Note: *I will not be providing my specific ID I received, but I figured out at least 4 digit  combinations seem to work*
 
@@ -119,3 +119,22 @@ user_send_status.php
 ```
 
 Investigation continues.... stay posted for updates!
+
+# Email Analysis
+
+The emails came from within the messaging portal of booking dot com, I can see there are many different places affected by enumerating the possible reservation codes, and correlating the address with an actual place reservable on booking dot com.
+
+I looked at the headers and everything seemed normal. Within the chat on the booking dot come website the malicious message and link are visible as well, so this is not email spoofing. I am not sure exactly how booking dot com manages accounts for locations, and whether we are seeing an possible incident or just successful credential stuffing / multiple account compromise.
+
+
+# Actions Taken
+
+I reported the domain to the one it was registered under, Dynadot.
+
+I am also in the process of recording all the properties available on the site, so I might be able to inform those who aren't already aware that their account may be compromised. 
+
+## Related Articles
+
+I did some digging to see if this was reported elsewhere, finding some articles from late 2023, and funny enough from kaspersky
+https://www.kaspersky.com/blog/booking-com-hacked-hotel-accounts-scam-customers/50109/
+https://www.bbc.com/news/technology-67591310
