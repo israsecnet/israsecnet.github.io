@@ -9,7 +9,7 @@ tags: [phishing, threat intelligence]
 This campaign is ONGOING and you should visit the links below with caution!
 
 # Intro
-I like receiving phishing emails, let's investigate this specific campaign I stumbled upon. A friend of mine recently booked on booking.com, and received a follow up message from within the booking\[.]com messaging service seemingly from the hotel or booking.
+I like receiving phishing emails, let's investigate this specific campaign I stumbled upon. A friend of mine recently booked on booking\[.].com, and received a follow up message from within the booking\[.]com messaging service seemingly from the hotel or booking.
 
 # First look
 The email comes in impersonating the booking\[.]com website. It prompts for a reservation to be completed or it will be cancelled, and then provides an ID and a link to follow. 
