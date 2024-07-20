@@ -245,6 +245,11 @@ Created: 2024-07-16 21:32:01 UTC
 ```
 
 I will not list all of the domains, but I have identified at least guestconfirm2-9
+
+## Main domain enumeration
+I was able to access `https[:]//guestconfirm2[.]com/index[.]html`
+![alt text](assets/img/lspmanagerbadbooking.png)
+
 # Actions Taken
 
 I reported the intial domain to the registrar it was registered under, Dynadot.
