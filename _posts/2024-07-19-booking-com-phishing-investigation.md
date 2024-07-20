@@ -252,6 +252,8 @@ I was able to access `https[:]//guestconfirm2[.]com/index[.]html`
 
 Which then led me to more enumeration, finding a roundcube webmail server hosted on /roundcube/
 ![alt text](assets/img/badbookingroundcube.png)
+
+Version is `rcversion:10415`
 # Actions Taken
 
 I reported the intial domain to the registrar it was registered under, Dynadot.
