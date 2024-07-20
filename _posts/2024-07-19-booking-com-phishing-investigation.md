@@ -113,7 +113,7 @@ manual_push_confirm.php
 manual_send_data.php
 manual_send_sms.php
 msg_check.php # Checks for new messages in chat
-payment_card_status.php
+payment_card_status.php # Accepts code= as POST data and returns either a true or false status
 send_msg.php # Used to send messages in chat
 user_send_status.php
 ```
