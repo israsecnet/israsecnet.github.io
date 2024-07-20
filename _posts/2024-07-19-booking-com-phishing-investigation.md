@@ -129,12 +129,65 @@ I looked at the headers and everything seemed normal. Within the chat on the boo
 
 # Actions Taken
 
-I reported the domain to the one it was registered under, Dynadot.
+I reported the domain to the registrar it was registered under, Dynadot.
 
 I am also in the process of recording all the properties available on the site, so I might be able to inform those who aren't already aware that their account may be compromised. 
 
 ## Related Articles
 
-I did some digging to see if this was reported elsewhere, finding some articles from late 2023, and funny enough from kaspersky
+I did some digging to see if this was reported elsewhere, finding some articles from late 2023, and funny enough from kaspersky:
+
 https://www.kaspersky.com/blog/booking-com-hacked-hotel-accounts-scam-customers/50109/
 https://www.bbc.com/news/technology-67591310
+
+## Live Affected Properties:
+```
+Booking: B&B HOTEL Bordeaux Centre Bègles
+1 Place des Terres Neuves 33130 Bègles France
+
+Booking: Hotel Twenty-Three Amsterdam Airport
+1007 Kruisweg 2131 CR Hoofddorp Netherlands
+
+Booking: Hotel Liautaud
+2 avenue victor hugo 13260 Cassis France
+
+Booking: Hôtel Montecristo
+20 Rue Pascal 5th arr. 75005 Paris France
+
+Booking: Brit Hotel Bordeaux Arena
+27 Chemin dArcins 33360 Latresne France
+
+Booking: Hôtel Le Cardinal
+3 rue du Cardinal Mercier 9th arr. 75009 Paris France
+
+Booking: Ki Space Hotel & Spa - près de Disneyland Paris
+4 Avenue Johannes Gutenberg 77700 Serris France
+
+Booking: Fairlawn House
+42 High Street Amesbury SP4 7DL United Kingdom
+
+Booking: Boutique Hotel Jardines de Palerm
+CAN PUJOL DEN CARDONA 34 07830 San Jose Spain
+
+Booking: Pension Absolut Berlin
+Erich-Weinert-Straße 26 Pankow 10439 Berlin Germany
+
+Booking: Carathotel Düsseldorf City
+Oststraße 155 Stadtmitte 40210 Düsseldorf Germany
+
+Booking: La Boule dOr - Auberge créative
+Place de Bethléem 5 58500 Clamecy France
+
+Booking: Hotel The Lodge Vilvoorde
+Rondeweg 3 1800 Vilvoorde Belgien
+
+Booking: Spring River Ebbsfleet by Marstons Inns
+Talbot Lane Gravesend DA10 1AZ United Kingdom
+
+Booking: Tulip Inn Heerlen City Centre
+Wilhelminaplein 17 6411 KW Heerlen Niederlande
+
+Booking: The Loft Hostel Lavapies
+4 Calle de la Esperanza Centro 28012 Madrid Spain
+
+```
