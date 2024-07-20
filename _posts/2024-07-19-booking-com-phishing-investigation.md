@@ -6,7 +6,7 @@ tags: [phishing, threat intelligence]
 ---
 
 # Warning !
-This campaign is most likely still live and you should visit the links below with caution!
+This campaign is ONGOING and you should visit the links below with caution!
 
 # Intro
 I like receiving phishing emails, let's investigate this specific campaign I stumbled upon. A friend of mine recently booked on booking.com, and received a follow up message from within the booking\[.]com messaging service seemingly from the hotel or booking.
@@ -120,16 +120,114 @@ user_send_status.php
 
 Investigation continues.... stay posted for updates!
 
-# Email Analysis
+## Email Analysis
 
 The emails came from within the messaging portal of booking dot com, I can see there are many different places affected by enumerating the possible reservation codes, and correlating the address with an actual place reservable on booking dot com.
 
 I looked at the headers and everything seemed normal. Within the chat on the booking dot come website the malicious message and link are visible as well, so this is not email spoofing. I am not sure exactly how booking dot com manages accounts for locations, and whether we are seeing an possible incident or just successful credential stuffing / multiple account compromise.
 
 
+## Domain Analysis
+There seems to be no historical data, and the first time the domain was registered.
+
+```
+Name: GUESTCONFIRM7.COM
+Registry Domain ID: 2900438214_DOMAIN_COM-VRSN
+Domain Status:
+clientTransferProhibited
+Nameservers:
+MOLLY.NS.CLOUDFLARE.COM
+
+TREVOR.NS.CLOUDFLARE.COM
+
+Dates
+Registry Expiration: 2025-07-18 18:36:11 UTC
+Updated: 2024-07-18 18:38:06 UTC
+Created: 2024-07-18 18:36:11 UTC
+```
+Looking at the naming convention, let's see what other domains have been registered:
+
+```
+Name: GUESTCONFIRM5.COM
+Registry Domain ID: 2900420953_DOMAIN_COM-VRSN
+Domain Status:
+clientTransferProhibited
+Nameservers:
+MOLLY.NS.CLOUDFLARE.COM
+
+TREVOR.NS.CLOUDFLARE.COM
+
+Dates
+Registry Expiration: 2025-07-18 18:32:09 UTC
+Updated: 2024-07-18 18:33:25 UTC
+Created: 2024-07-18 18:32:09 UTC
+```
+
+This was registered minutes before GUESTCONFIRM7
+
+```
+Name: GUESTCONFIRM4.COM
+Registry Domain ID: 2900241807_DOMAIN_COM-VRSN
+Domain Status:
+clientTransferProhibited
+Nameservers:
+MOLLY.NS.CLOUDFLARE.COM
+
+TREVOR.NS.CLOUDFLARE.COM
+
+Dates
+Registry Expiration: 2025-07-18 10:19:11 UTC
+Updated: 2024-07-18 10:22:50 UTC
+Created: 2024-07-18 10:19:11 UTC
+```
+
+This one registered 8 hours before GUESTCONFIRM5
+
+```
+Name: GUESTCONFIRM3.COM
+Registry Domain ID: 2900192609_DOMAIN_COM-VRSN
+Domain Status:
+clientTransferProhibited
+Nameservers:
+MOLLY.NS.CLOUDFLARE.COM
+
+TREVOR.NS.CLOUDFLARE.COM
+
+Dates
+Registry Expiration: 2025-07-17 22:53:39 UTC
+Updated: 2024-07-17 22:56:44 UTC
+Created: 2024-07-17 22:53:39 UTC
+```
+```
+Name: GUESTCONFIRM2.COM
+Registry Domain ID: 2899896660_DOMAIN_COM-VRSN
+Domain Status:
+clientTransferProhibited
+Nameservers:
+MOLLY.NS.CLOUDFLARE.COM
+
+TREVOR.NS.CLOUDFLARE.COM
+
+Dates
+Registry Expiration: 2025-07-16 21:38:45 UTC
+Updated: 2024-07-16 21:46:18 UTC
+Created: 2024-07-16 21:38:45 UTC
+```
+```
+Name: GUESTCONFIRM1.COM
+Registry Domain ID: 2899896232_DOMAIN_COM-VRSN
+Domain Status:
+clientHold
+clientTransferProhibitedDates
+Registry Expiration: 2025-07-16 21:32:01 UTC
+Updated: 2024-07-19 02:05:47 UTC
+Created: 2024-07-16 21:32:01 UTC
+```
+
+I will not list all of the domains, but I have identified at least guestconfirm2-9
 # Actions Taken
 
-I reported the domain to the registrar it was registered under, Dynadot.
+I reported the intial domain to the registrar it was registered under, Dynadot.
 
 I am also in the process of recording all the properties available on the site, so I might be able to inform those who aren't already aware that their account may be compromised. 
 
