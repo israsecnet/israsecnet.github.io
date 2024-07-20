@@ -196,4 +196,7 @@ Zandstraat 100 6658 CX Beneden-Leeuwen Netherlands
 Booking: Aethos Sardinia
 Via Monti Corru 07020 Cannigione Italy
 
+Booking: Commander Hotel & Suites
+1401 Atlantic Acenue Ocean City 21842 United States of America
+
 ```
