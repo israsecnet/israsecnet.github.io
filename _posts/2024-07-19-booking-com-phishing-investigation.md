@@ -250,6 +250,8 @@ I will not list all of the domains, but I have identified at least guestconfirm2
 I was able to access `https[:]//guestconfirm2[.]com/index[.]html`
 ![alt text](assets/img/lspmanagerbadbooking.png)
 
+Which then led me to more enumeration, finding a roundcube webmail server hosted on /roundcube/
+![alt text](assets/img/badbookingroundcube.png)
 # Actions Taken
 
 I reported the intial domain to the registrar it was registered under, Dynadot.
