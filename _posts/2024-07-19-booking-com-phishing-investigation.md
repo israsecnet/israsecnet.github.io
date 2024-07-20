@@ -81,6 +81,26 @@ This is also confirmed in the captcha file we can see:
 ```
 <title>Один момент…</title>
 ```
+
+In one of the css files (ecceda18eeb9f8bf9842.css), the text content was:
+```
+.containerMF__input-wrapper.error:after{position:absolute;content:"Можно вводить только русские буквы";left:0;bottom:-25px;font-size:13px;color:#e91717;font-weight:300}
+```
+meaning, "You can only enter Russian letters"
+
+I have not seen this text anywhere, so I assume there is a page they have access on this server I have not yet found.
+
+Looking through more css files like delivery.css we have links to resources which comes from seemingly another company website in Russia:
+```
+https://static.avito.ru/s/cc/resources/52c248704ee8.svg
+https://static.avito.ru/s/cc/resources/b96531c287fc.svg
+https://static.avito.ru/s/cc/resources/d44632371d30.svg
+```
+In the file 0f8d39705450fe02adb0.css, I see another possible directory:
+```
+background-image: url(/_nuxt/img/ac4d6d7.png);
+```
+
 Directory listing is available for these directories:
 ```
 /css
