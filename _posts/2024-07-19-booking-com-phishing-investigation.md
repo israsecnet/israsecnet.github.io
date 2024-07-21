@@ -270,6 +270,8 @@ https[:]//booking[.]guestconfirm7[.]com/1100
 
 I developed a script to go one by one and enter this into each chat, so that if the user has not yet visited, when they do they will be alerted this site is not genuine.
 
+*as of 7/21, I only performed this attack to the 1-3 digit IDs, currently testing 4-6 digits and looking to improve payload of xss :\)*
+
 ## Related Articles
 
 I did some digging to see if this was reported elsewhere, finding some articles from late 2023, and funny enough from kaspersky:
