@@ -260,6 +260,13 @@ I reported the intial domain to the registrar it was registered under, Dynadot.
 
 I am also in the process of recording all the properties available on the site, so I might be able to inform those who aren't already aware that their account may be compromised. 
 
+I also discovered a static XSS bug with their chat feature, allowing me to alert potential users of the scam.
+
+You can see evidence of this live on:
+```
+https[:]//booking[.]guestconfirm7[.]com/1100
+```
+
 ## Related Articles
 
 I did some digging to see if this was reported elsewhere, finding some articles from late 2023, and funny enough from kaspersky:
