@@ -266,7 +266,7 @@ You can see evidence of this live on:
 ```
 https[:]//booking[.]guestconfirm7[.]com/1100
 ```
-![alt text](assets/img/badbooking.png)
+![alt text](assets/img/badbookingxss.png)
 
 I developed a script to go one by one and enter this into each chat, so that if the user has not yet visited, when they do they will be alerted this site is not genuine.
 
