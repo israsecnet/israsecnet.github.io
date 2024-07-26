@@ -5,8 +5,21 @@ categories: [phishing]
 tags: [phishing, threat intelligence]
 ---
 
+### Update 7/25
+
+We now get the following when visiting all domains mentioned:
+```
+
+<html><body><h1>503 Service Unavailable</h1>
+No server is available to handle this request.
+</body></html>
+
+```
+
+Looks like Dynadot took care of it. I have still not been able to confirm directly whether or not this was a credential compromise or a vulnerability in the booking . com platform. This will take some reaching out to the locations I was able to gather and hopefully getting some more information on what booking . com's response was.
+
 # Warning !
-This campaign is ONGOING and you should visit the links below with caution!
+This campaign may still be ONGOING and you should visit the links below with caution!
 
 # Intro
 I like receiving phishing emails, let's investigate this specific campaign I stumbled upon. A friend of mine recently booked on booking\[.].com, and received a follow up message from within the booking\[.]com messaging service seemingly from the hotel or booking.
