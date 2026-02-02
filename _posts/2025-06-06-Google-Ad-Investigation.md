@@ -52,6 +52,7 @@ https://new-day-new-music-now-dtc8dee5bte4gycy.eastus-01.azurewebsites.net/?refe
 ```
 https://ddfdfd7667ss.blob.core.windows.net/$web/index.html?ph0n=1-888-734-0548&referrer=appmetrica_tracking_id%3D677429353537089616%26ym_tracking_id%3D8312903728687775088
 ```
+
 ## The Illusion of Legitimacy
 In this case, the search result is displayed with a reputable display URL (e.g., youtube.com). If a user hovers over the link to inspect the destination before clicking:
 
@@ -59,4 +60,5 @@ In this case, the search result is displayed with a reputable display URL (e.g.,
 
 **The Visual Cue**: To the average user, the only distinguishing factor between a safe organic result and this malicious redirect is the small "Sponsored" tag above the headline.
 
-[!WARNING] Key Takeaway: If a search result is labeled as "Sponsored," you cannot trust the URL preview shown at the bottom of your browser. Attackers utilize the "Tracking Template" feature in Google Ads to ensure the hover-over text points to a trusted domain, while the actual click triggers a silent redirect to their infrastructure.
+> [!WARNING] 
+> Key Takeaway: If a search result is labeled as "Sponsored," you cannot trust the URL preview shown at the bottom of your browser. Attackers utilize the "Tracking Template" feature in Google Ads to ensure the hover-over text points to a trusted domain, while the actual click triggers a silent redirect to their infrastructure.
