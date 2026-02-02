@@ -66,15 +66,13 @@ let pageUrl='https://app.getfiledrop.com/profile';async function fetchAndExtract
 ```
 
 ### PoC in action
-{%
-  include embed/video.html
-  src='/assets/img/FileDropPoC.mp4'
-  types='mp4'
-  title='Demo video'
-  autoplay=true
-  loop=true
-  muted=true
-%}
+<iframe 
+    width="560" 
+    height="315" 
+    src="/assets/img/FileDropPoC.mp4" 
+    frameborder="0" 
+    allowfullscreen>
+</iframe>
 
 ### Follow-Up
 
