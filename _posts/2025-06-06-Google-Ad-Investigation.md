@@ -44,8 +44,8 @@ Despite these efforts, the sheer volume of ads and the evolving tactics of attac
 ```
 https://redirect.appmetrica.yandex.com/serve/677429353537089616?campaign_id=9&pub_id=2&url=https://www.youtube.com/YOUTUBE%3Fgad_source%3D1&id={source}&gclid=CjwKCAjw_Na1BhAlEiwAM-dm7Elzv8NWE--ley5GwbiGnrSGAn8sT3v_pSK2E0vjrOlRNYG2TpANUBoCDG4QAvD_BwE
 ```
-- **Secondary Redirect URL (Attacker Owned)**:
-``` URL
+- **Secondary Redirect URL (Attacker Owned):**
+```
 https://new-day-new-music-now-dtc8dee5bte4gycy.eastus-01.azurewebsites.net/?referrer=appmetrica_tracking_id%3D677429353537089616%26ym_tracking_id%3D8312903728687775088
 ```
 - **Final destination (Attacker Owned) - Malware:**
