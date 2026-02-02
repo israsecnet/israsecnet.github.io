@@ -60,5 +60,5 @@ In this case, the search result is displayed with a reputable display URL (e.g.,
 
 **The Visual Cue**: To the average user, the only distinguishing factor between a safe organic result and this malicious redirect is the small "Sponsored" tag above the headline.
 
-> [!WARNING] 
 > Key Takeaway: If a search result is labeled as "Sponsored," you cannot trust the URL preview shown at the bottom of your browser. Attackers utilize the "Tracking Template" feature in Google Ads to ensure the hover-over text points to a trusted domain, while the actual click triggers a silent redirect to their infrastructure.
+{: .prompt-warning }
