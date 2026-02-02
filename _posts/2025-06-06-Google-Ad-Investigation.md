@@ -45,13 +45,14 @@ Despite these efforts, the sheer volume of ads and the evolving tactics of attac
 https://redirect.appmetrica.yandex.com/serve/677429353537089616?campaign_id=9&pub_id=2&url=https://www.youtube.com/YOUTUBE%3Fgad_source%3D1&id={source}&gclid=CjwKCAjw_Na1BhAlEiwAM-dm7Elzv8NWE--ley5GwbiGnrSGAn8sT3v_pSK2E0vjrOlRNYG2TpANUBoCDG4QAvD_BwE
 ```
 - **Secondary Redirect URL (Attacker Owned)**:
-``` URL
+```
 https://new-day-new-music-now-dtc8dee5bte4gycy.eastus-01.azurewebsites.net/?referrer=appmetrica_tracking_id%3D677429353537089616%26ym_tracking_id%3D8312903728687775088
 ```
 - **Final destination (Attacker Owned) - Malware:**
 ```
 https://ddfdfd7667ss.blob.core.windows.net/$web/index.html?ph0n=1-888-734-0548&referrer=appmetrica_tracking_id%3D677429353537089616%26ym_tracking_id%3D8312903728687775088
 ```
+
 ## The Illusion of Legitimacy
 In this case, the search result is displayed with a reputable display URL (e.g., youtube.com). If a user hovers over the link to inspect the destination before clicking:
 
@@ -59,4 +60,6 @@ In this case, the search result is displayed with a reputable display URL (e.g.,
 
 **The Visual Cue**: To the average user, the only distinguishing factor between a safe organic result and this malicious redirect is the small "Sponsored" tag above the headline.
 
-[!WARNING] Key Takeaway: If a search result is labeled as "Sponsored," you cannot trust the URL preview shown at the bottom of your browser. Attackers utilize the "Tracking Template" feature in Google Ads to ensure the hover-over text points to a trusted domain, while the actual click triggers a silent redirect to their infrastructure.
+> [!WARNING]
+Key Takeaway:
+If a search result is labeled as "Sponsored," you cannot trust the URL preview shown at the bottom of your browser. Attackers utilize the "Tracking Template" feature in Google Ads to ensure the hover-over text points to a trusted domain, while the actual click triggers a silent redirect to their infrastructure.
