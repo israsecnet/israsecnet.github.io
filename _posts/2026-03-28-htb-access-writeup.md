@@ -298,7 +298,7 @@ L�F�@ ��7���7���#�P/P�O� �:i�+00�/C:\R1M�:Wind
                                           )ΰ[�  ��1SPS��XF�L8C���&�m�e*S-1-5-21-953262931-566350628-63446256-500
 ```
 
-While we *can* just attempt to parse the readable information from this binary file type, tool suites such as **liblnk-utils** to better interpret this shortcut file:
+While we *can* just attempt to parse the readable information from this binary file type, tool suites such as **liblnk-utils** will allow us to better interpret this shortcut file:
 ```
 sudo apt install liblnk-utils -y
 ```
