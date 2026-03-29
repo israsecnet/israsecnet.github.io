@@ -2,7 +2,7 @@
 title: THM Valley Writeup
 date: 2024-03-30 10:58 -0400
 categories: [Writeups, TryHackMe]
-tags: [valley, ctf]
+tags: [ctf]
 ---
 
 # Intro

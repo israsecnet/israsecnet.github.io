@@ -3,6 +3,7 @@ title: Booking.com Phishing Investigation
 date: 2024-07-19 22:32 -0400
 categories: [phishing]
 tags: [phishing, threat intelligence]
+pin: true
 ---
 
 ### Update 7/25

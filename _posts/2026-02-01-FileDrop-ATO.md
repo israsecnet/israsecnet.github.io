@@ -3,6 +3,7 @@ title: FileDrop One Click ATO
 date: 2026-02-01 19:32 -0400
 categories: [bug bounty]
 tags: [writeup, bug bounty]
+pin: true
 ---
 
 This web application is vulnerable to CVE-2024-4367, a result of containing a vulnerable version of the PDF.js library.

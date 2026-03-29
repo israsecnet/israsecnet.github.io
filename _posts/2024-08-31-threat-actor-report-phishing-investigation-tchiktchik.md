@@ -3,6 +3,7 @@ title: Threat Actor Report / Phishing Investigation - tchiktchik
 date: 2024-08-31 11:02 -0400
 categories: [phishing]
 tags: [phishing, threat intelligence, threat actor, telegram]
+pin: true
 ---
 
 ## Introduction

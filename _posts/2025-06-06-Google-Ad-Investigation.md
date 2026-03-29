@@ -3,6 +3,7 @@ title: 'An Investigation into Google Ads as a Phishing Vector'
 date: 2025-06-06 13:25 -0400
 categories: [phishing]
 tags: [phishing, threat intelligence]
+pin: true
 ---
 
 # Background

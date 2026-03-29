@@ -8,7 +8,7 @@ order: 4
 _Try Hack Me Badge_
 
 # Who
-My name is Israel, but my friends call me isra.
+My name is Israel, but my friends call me Isra.
 
 # What
 This site serves as a portfolio for my work and as a platform to centralize resources or projects I find useful
@@ -17,7 +17,7 @@ This site serves as a portfolio for my work and as a platform to centralize reso
 I have been breaking computers since limewire, but back then it was unintentional
 
 # Where
-Based in the US, but I love to travel
+United States
 
 # Why
-I believe it is important for information to be shared amongst the community, especially pertaining to security
+I believe it is important for information to be shared amongst the community, especially pertaining to cybersecurity
