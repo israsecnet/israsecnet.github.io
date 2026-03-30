@@ -362,7 +362,7 @@ Mode                LastWriteTime         Length Name
 ## Privilege Escalation
 
 Going back to our previous LDAP enumeration with bloodhound, the **ryan** user has Outbound Object Control on the **ca_svc** account:
-![alt text](/assets/img/EscapeTwo_1.png)
+![alt text](/assets/img/HTBWriteupScreenshots/EscapeTwo_1.png)
 
 We will change the ownership of the object, and then grant ourselves the GenericAll permission. Since we already attempted kerberoasting and cracking the hash, we will just force change the password.
 ``` shell
@@ -381,7 +381,7 @@ SMB         10.129.10.219   445    DC01             [+] sequel.htb\ca_svc:newP@s
 ```
 
 We can see that the **ca_svc** user is a part of the **Cert Publishers** group:
-![alt text](/assets/img/EscapeTwo_2.png)
+![alt text](/assets/img/HTBWriteupScreenshots/EscapeTwo_2.png)
 
 We can begin to investigate any vulnerable certificates.
 ``` shell
