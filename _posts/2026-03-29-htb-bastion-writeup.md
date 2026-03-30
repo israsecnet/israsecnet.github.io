@@ -316,13 +316,13 @@ PS C:\Program Files (x86)\mRemoteNG> cat .\Changelog.txt
 1.76.11 (2018-10-18): 
 ```
 
-Looking up this version, we discover that the application stores credentials even if the user has not logged in yet. The version is also vulnerable to another exploit (CVE-2023-30367), but it requires creating a memory dump of the application to extract the password in plaintext: https://nvd.nist.gov/vuln/detail/CVE-2023-30367
+Looking up this version, we discover that the application stores credentials even if the user has not logged in yet. The version is also vulnerable to another exploit (CVE-2023-30367), but it requires creating a memory dump of the application to extract the password in plaintext: https://nvd.nist.gov/vuln/detail/CVE-2023-30367 
 
-Versions before 1.7.4 store passwords in an insecure format, with a hardcoded encryption key: https://www.errno.fr/mRemoteNG.html
+Versions before 1.7.4 store passwords in an insecure format, with a hardcoded encryption key: https://www.errno.fr/mRemoteNG.html 
 
-The password and connection information is stored in the `%APPDATA%\mRemoteNG\confCons.xml` folder: https://github.com/mRemoteNG/mRemoteNG/issues/1963
+The password and connection information is stored in the `%APPDATA%\mRemoteNG\confCons.xml` folder: https://github.com/mRemoteNG/mRemoteNG/issues/1963 
 
-A tool to decrypt the password can be found here: https://github.com/kmahyyg/mremoteng-decrypt
+A tool to decrypt the password can be found here: https://github.com/kmahyyg/mremoteng-decrypt 
 
 With this knowledge in hand, we can gather the required information:
 ``` shell
