@@ -2,7 +2,7 @@
 title: 'THM Tech_Supprt: 1 Writeup'
 date: 2024-03-30 17:34 -0400
 categories: [Writeups, TryHackMe]
-tags: [ctf]
+tags: [ctf, writeups]
 ---
 # Intro
 This box askes us to find a root flag, not much else in regards to direction or hints.

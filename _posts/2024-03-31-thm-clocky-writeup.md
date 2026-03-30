@@ -2,7 +2,7 @@
 title: THM Clocky Writeup
 date: 2024-03-31 06:42 -0400
 categories: [Writeups, TryHackMe]
-tags: [ctf]
+tags: [ctf, writeups]
 ---
 
 # Intro

