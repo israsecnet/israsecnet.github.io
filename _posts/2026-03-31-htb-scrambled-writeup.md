@@ -216,7 +216,7 @@ We can gather most of this information by using bloodhound-python, which will si
 bloodhound-python -c All -u ksimpson -no-pass -k --zip -ns $TARGETIP -d scrm.local
 ```
 
-[SCREENSHOT 4]
+![alt text](/assets/img/HTBWriteupScreenshots/Scrambled_4.png)
 
 We now have the Domain SID and the SPN. We will just have to recalculate the NTLM hash for the password.
 ``` shell
