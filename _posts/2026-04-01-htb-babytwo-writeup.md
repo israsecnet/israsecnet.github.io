@@ -258,7 +258,7 @@ It looks like the users are able to read and write to the apps folder, as well a
 > Initially this box gave me some trouble, as I did not know where to go from here. An important thing to note is that the permissions shown in the netexec output are only general, and it is possible that subdirectories within the share have different permissions than displayed. 
 {: .prompt-info }
 
-I created this bash script to enumerate all subdirectory and file permissions:
+I created this bash script to enumerate all subdirectory and file permissions, it can also be downloaded [here](https://github.com/israsecnet/SMBACLEnumerator):
 ``` bash
 #!/bin/bash
 
